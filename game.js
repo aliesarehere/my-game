@@ -31,8 +31,8 @@ export class GameScene extends Phaser.Scene {
         // Initialize keyboard controls
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        // Add invisible on-screen controls (mobile controls)
-        this.addInvisibleOnScreenControls();  // Call the method to add touch controls
+        // Add mobile two-button controls for changing directions
+        this.addMobileControls();
 
         // Scale game elements based on device screen size
         this.scaleGameElements();
@@ -55,30 +55,38 @@ export class GameScene extends Phaser.Scene {
         this.scene.restart();  // Restart the current scene, resetting all objects and variables
     }
 
-    // Method to add invisible on-screen touch controls for mobile
-    addInvisibleOnScreenControls() {
-        // Create invisible button regions for controls
-        const bottomHalf = window.innerHeight / 2;
+    // Method to add two-button mobile controls for changing directions
+    addMobileControls() {
+        const bottomY = window.innerHeight - 100;  // Y position for the buttons
 
-        // Invisible Up button area (top center of the bottom half)
-        this.upButtonArea = this.add.rectangle(window.innerWidth / 2, bottomHalf - 100, 200, 200, 0x000000, 0).setInteractive();
-        this.upButtonArea.on('pointerdown', () => this.cursors.up.isDown = true);
-        this.upButtonArea.on('pointerup', () => this.cursors.up.isDown = false);
+        // Clockwise button (right side of the screen)
+        const clockwiseButton = this.add.rectangle(window.innerWidth - 100, bottomY, 100, 100, 0x000000, 0.3).setInteractive();
+        clockwiseButton.on('pointerdown', () => this.changeDirection('clockwise'));
 
-        // Invisible Down button area (bottom center of the bottom half)
-        this.downButtonArea = this.add.rectangle(window.innerWidth / 2, window.innerHeight - 100, 200, 200, 0x000000, 0).setInteractive();
-        this.downButtonArea.on('pointerdown', () => this.cursors.down.isDown = true);
-        this.downButtonArea.on('pointerup', () => this.cursors.down.isDown = false);
+        // Counterclockwise button (left side of the screen)
+        const counterclockwiseButton = this.add.rectangle(100, bottomY, 100, 100, 0x000000, 0.3).setInteractive();
+        counterclockwiseButton.on('pointerdown', () => this.changeDirection('counterclockwise'));
+    }
 
-        // Invisible Left button area (left side of the bottom half)
-        this.leftButtonArea = this.add.rectangle(100, window.innerHeight - 150, 200, 200, 0x000000, 0).setInteractive();
-        this.leftButtonArea.on('pointerdown', () => this.cursors.left.isDown = true);
-        this.leftButtonArea.on('pointerup', () => this.cursors.left.isDown = false);
+    // Method to change direction based on button press
+    changeDirection(turnDirection) {
+        const currentDirection = this.cursors.direction;  // Assume we are using direction tracking logic
+        let newDirection;
 
-        // Invisible Right button area (right side of the bottom half)
-        this.rightButtonArea = this.add.rectangle(window.innerWidth - 100, window.innerHeight - 150, 200, 200, 0x000000, 0).setInteractive();
-        this.rightButtonArea.on('pointerdown', () => this.cursors.right.isDown = true);
-        this.rightButtonArea.on('pointerup', () => this.cursors.right.isDown = false);
+        const directions = ['RIGHT', 'DOWN', 'LEFT', 'UP'];
+
+        const currentIndex = directions.indexOf(currentDirection);
+
+        if (turnDirection === 'clockwise') {
+            // Move to the next direction in the array
+            newDirection = directions[(currentIndex + 1) % directions.length];
+        } else if (turnDirection === 'counterclockwise') {
+            // Move to the previous direction in the array
+            newDirection = directions[(currentIndex - 1 + directions.length) % directions.length];
+        }
+
+        // Update the direction of movement
+        this.cursors.direction = newDirection;  // Assume the cursors object is tracking the direction
     }
 
     // Method to scale game elements proportionally based on screen size
@@ -93,14 +101,6 @@ export class GameScene extends Phaser.Scene {
         // Scale the score text if initialized
         if (this.scoreText) {
             this.scoreText.setFontSize(24 * scale);
-        }
-
-        // Rescale buttons for mobile controls
-        if (this.upButtonArea) {
-            this.upButtonArea.setSize(200 * scale, 200 * scale);
-            this.downButtonArea.setSize(200 * scale, 200 * scale);
-            this.leftButtonArea.setSize(200 * scale, 200 * scale);
-            this.rightButtonArea.setSize(200 * scale, 200 * scale);
         }
     }
 }
