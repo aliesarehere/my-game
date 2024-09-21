@@ -18,7 +18,13 @@ export class GameScene extends Phaser.Scene {
 
     create() {
         // Add and scale the background
-        this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'background').setDisplaySize(window.innerWidth, window.innerHeight);
+        let bg = this.add.image(0, 0, 'background').setOrigin(0, 0);
+
+        // Scale background to fit the window
+        let scaleX = window.innerWidth / bg.width;
+        let scaleY = window.innerHeight / bg.height;
+        let scale = Math.max(scaleX, scaleY);
+        bg.setScale(scale).setScrollFactor(0);
 
         // Reset score and tail when the scene is created or restarted
         this.score = 0;  // Initialize the score as part of the scene object
