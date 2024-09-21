@@ -17,7 +17,7 @@ export function spawnCollectible(scene, type) {
     let x = Phaser.Math.Between(0, 23) * tileSize;  // Random x-coordinate
     let y = Phaser.Math.Between(0, 39) * tileSize;  // Random y-coordinate
 
-    const collectibleScale = 0.8;  // Adjust scale factor here for larger size
+    const collectibleScale = 0.7;  // Adjust scale factor here for larger size
 
     // Spawn a diamond if none is currently active
     if (type === 'diamond' && !diamondSpawned) {
