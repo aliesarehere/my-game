@@ -2,7 +2,7 @@ import { speedSettings } from './speed.js';  // Import speed settings
 
 export let player, lastDirection = 'RIGHT', currentDirection = 'RIGHT', lastMoveTime = 0;  // Export currentDirection
 const playerSpeed = speedSettings.playerSpeed, moveDelay = speedSettings.moveDelay;
-let playerScale = 0.9;  // New variable to store player scale
+let playerScale = 1;  // New variable to store player scale
 
 // Preload player sprites
 export function preloadPlayer(scene) {
