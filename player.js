@@ -1,6 +1,6 @@
 import { speedSettings } from './speed.js';  // Import speed settings
 
-export let player, lastDirection = 'RIGHT', currentDirection = 'RIGHT', lastMoveTime = 0;
+export let player, lastDirection = 'RIGHT', currentDirection = 'RIGHT', lastMoveTime = 0;  // Export currentDirection
 const playerSpeed = speedSettings.playerSpeed, moveDelay = speedSettings.moveDelay;
 
 // Preload player sprites
@@ -19,6 +19,12 @@ export function createPlayer(scene) {
 
 // Update player movement
 export function updatePlayer(scene, cursors) {
+    // Defensive check to ensure cursors is not undefined
+    if (!cursors || !cursors.left || !cursors.right || !cursors.up || !cursors.down) {
+        return;
+    }
+
+    // Movement logic based on cursor input
     if (cursors.left.isDown && lastDirection !== 'RIGHT') {
         currentDirection = 'LEFT';
     } else if (cursors.right.isDown && lastDirection !== 'LEFT') {
@@ -29,6 +35,7 @@ export function updatePlayer(scene, cursors) {
         currentDirection = 'DOWN';
     }
 
+    // Move player if enough time has passed since last move
     if (scene.time.now - lastMoveTime > moveDelay) {
         movePlayer(scene);
         lastMoveTime = scene.time.now;

@@ -5,6 +5,8 @@ import { updateTail, checkTailCollision } from './tail.js';  // Import tail func
 export class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });  // Define the scene with a key
+        this.currentDirection = 'RIGHT';  // Initial direction
+        this.directions = ['UP', 'RIGHT', 'DOWN', 'LEFT'];  // Directions in clockwise order
     }
 
     preload() {
@@ -28,11 +30,11 @@ export class GameScene extends Phaser.Scene {
         createPlayer(this);  // Create the player sprite
         createCollectibles(this);  // Create collectibles like diamonds and money
 
-        // Initialize keyboard controls
+        // Initialize the keyboard controls
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        // Add mobile two-button controls for changing directions
-        this.addMobileControls();
+        // Add on-screen touch controls for mobile
+        this.addTouchControls();  // Call the method to add touch controls
 
         // Scale game elements based on device screen size
         this.scaleGameElements();
@@ -45,7 +47,7 @@ export class GameScene extends Phaser.Scene {
 
     update(time, delta) {
         // Update player movement, tail behavior, and check for collisions
-        updatePlayer(this, this.cursors);  // Update player movement
+        updatePlayer(this, this.cursors, this.currentDirection);  // Update player movement
         updateTail();  // Update the tail's movement
         checkTailCollision(this);  // Check if the player collides with their own tail
     }
@@ -55,38 +57,35 @@ export class GameScene extends Phaser.Scene {
         this.scene.restart();  // Restart the current scene, resetting all objects and variables
     }
 
-    // Method to add two-button mobile controls for changing directions
-    addMobileControls() {
-        const bottomY = window.innerHeight - 100;  // Y position for the buttons
+    // Method to add touch controls for mobile devices
+    addTouchControls() {
+        // Divide the screen into two parts: left and right for control buttons
+        const leftButton = this.add.rectangle(0, 0, window.innerWidth / 2, window.innerHeight, 0x000000, 0).setOrigin(0).setInteractive();
+        const rightButton = this.add.rectangle(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight, 0x000000, 0).setOrigin(0).setInteractive();
 
-        // Clockwise button (right side of the screen)
-        const clockwiseButton = this.add.rectangle(window.innerWidth - 100, bottomY, 100, 100, 0x000000, 0.3).setInteractive();
-        clockwiseButton.on('pointerdown', () => this.changeDirection('clockwise'));
+        // Handle left button for counterclockwise rotation
+        leftButton.on('pointerdown', () => {
+            this.rotateCounterClockwise();
+        });
 
-        // Counterclockwise button (left side of the screen)
-        const counterclockwiseButton = this.add.rectangle(100, bottomY, 100, 100, 0x000000, 0.3).setInteractive();
-        counterclockwiseButton.on('pointerdown', () => this.changeDirection('counterclockwise'));
+        // Handle right button for clockwise rotation
+        rightButton.on('pointerdown', () => {
+            this.rotateClockwise();
+        });
     }
 
-    // Method to change direction based on button press
-    changeDirection(turnDirection) {
-        const currentDirection = this.cursors.direction;  // Assume we are using direction tracking logic
-        let newDirection;
+    // Method to rotate the direction counterclockwise
+    rotateCounterClockwise() {
+        const currentIndex = this.directions.indexOf(this.currentDirection);
+        const newIndex = (currentIndex - 1 + this.directions.length) % this.directions.length;
+        this.currentDirection = this.directions[newIndex];
+    }
 
-        const directions = ['RIGHT', 'DOWN', 'LEFT', 'UP'];
-
-        const currentIndex = directions.indexOf(currentDirection);
-
-        if (turnDirection === 'clockwise') {
-            // Move to the next direction in the array
-            newDirection = directions[(currentIndex + 1) % directions.length];
-        } else if (turnDirection === 'counterclockwise') {
-            // Move to the previous direction in the array
-            newDirection = directions[(currentIndex - 1 + directions.length) % directions.length];
-        }
-
-        // Update the direction of movement
-        this.cursors.direction = newDirection;  // Assume the cursors object is tracking the direction
+    // Method to rotate the direction clockwise
+    rotateClockwise() {
+        const currentIndex = this.directions.indexOf(this.currentDirection);
+        const newIndex = (currentIndex + 1) % this.directions.length;
+        this.currentDirection = this.directions[newIndex];
     }
 
     // Method to scale game elements proportionally based on screen size
