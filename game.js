@@ -1,12 +1,12 @@
-import { preloadPlayer, createPlayer, updatePlayer, movePlayer, player } from './player.js';  // Import player functions
+import { preloadPlayer, createPlayer, updatePlayer, scalePlayerOnResize, player } from './player.js';  // Import player functions
 import { createCollectibles } from './collectibles.js';  // Import collectibles functions
-import { updateTail, checkTailCollision, tail } from './tail.js';  // Import tail functions
+import { updateTail, checkTailCollision, growTail, tail } from './tail.js';  // Import tail functions
 
 export class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
-        this.currentDirection = 'RIGHT';  // Initial direction
-        this.directions = ['UP', 'RIGHT', 'DOWN', 'LEFT'];  // Directions in clockwise order
+        this.currentDirection = 'RIGHT';  // Initial player direction
+        this.directions = ['UP', 'RIGHT', 'DOWN', 'LEFT'];  // Clockwise directions
     }
 
     preload() {
@@ -22,27 +22,27 @@ export class GameScene extends Phaser.Scene {
         // Add and scale the background
         this.background = this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'background').setDisplaySize(window.innerWidth, window.innerHeight);
         
-        // Reset score and tail when the scene is created or restarted
-        this.score = 0;  // Initialize the score as part of the scene object
+        // Initialize score and tail
+        this.score = 0;
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '24px', fill: '#fff' });
-
+        
         // Create player and collectibles
-        createPlayer(this);  // Create the player sprite
+        createPlayer(this);  // Create the player sprite with 1.5x scale
         createCollectibles(this);  // Create collectibles like diamonds and money
 
         // Initialize keyboard controls
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        // Add on-screen touch controls for mobile
-        this.addTouchControls();  // Call the method to add touch controls
+        // Add touch controls for mobile
+        this.addTouchControls();
 
-        // Scale game elements based on device screen size
-        this.scaleGameElements();
-        
         // Add resize event listener to apply scaling when the window is resized
         window.addEventListener('resize', () => {
             this.scaleGameElements();
         });
+
+        // Scale game elements initially
+        this.scaleGameElements();
     }
 
     update(time, delta) {
@@ -117,7 +117,7 @@ export class GameScene extends Phaser.Scene {
         const scaleX = window.innerWidth / this.background.width;
         const scaleY = window.innerHeight / this.background.height;
         const scale = Math.max(scaleX, scaleY);
-        
+
         // Scale the background proportionally
         this.background.setScale(scale).setScrollFactor(0);
 
@@ -126,11 +126,10 @@ export class GameScene extends Phaser.Scene {
             this.scoreText.setFontSize(24 * scale);
         }
 
-        // Scale player and tail proportionally
-        if (player) {
-            player.setScale(scale);
-        }
+        // Ensure the player is 1.5 times bigger than other elements
+        scalePlayerOnResize();
 
+        // Scale tail segments proportionally if they exist
         if (tail.length > 0) {
             tail.forEach(segment => segment.setScale(scale));
         }

@@ -18,21 +18,15 @@ export function spawnCollectible(scene, type) {
     let x = Phaser.Math.Between(0, 23) * tileSize;
     let y = Phaser.Math.Between(0, 39) * tileSize;
 
-    // Spawn a diamond if none is currently active
     if (type === 'diamond' && !diamondSpawned) {
-        let diamond = scene.physics.add.sprite(x, y, 'diamond').setOrigin(0).setScale(collectibleScale);  // Apply scale
+        let diamond = scene.physics.add.sprite(x, y, 'diamond').setOrigin(0).setScale(collectibleScale);
         diamonds.push(diamond);
         diamondSpawned = true;
-        // Add overlap detection to collect the diamond when the player touches it
         scene.physics.add.overlap(player, diamond, () => collectDiamond(scene, diamond), null, scene);
-    }
-
-    // Spawn a money bag if none is currently active
-    else if (type === 'money' && !moneySpawned) {
-        let money = scene.physics.add.sprite(x, y, 'money').setOrigin(0).setScale(collectibleScale);  // Apply scale
+    } else if (type === 'money' && !moneySpawned) {
+        let money = scene.physics.add.sprite(x, y, 'money').setOrigin(0).setScale(collectibleScale);
         moneyBags.push(money);
         moneySpawned = true;
-        // Add overlap detection to collect the money when the player touches it
         scene.physics.add.overlap(player, money, () => collectMoney(scene, money), null, scene);
     }
 }
@@ -40,33 +34,27 @@ export function spawnCollectible(scene, type) {
 // Function to handle the collection of diamonds
 export function collectDiamond(scene, diamond) {
     if (diamond.active) {
-        diamond.disableBody(true, true);  // Disable and hide the diamond when collected
-        scene.score += 30;  // Increase score by 30 for collecting a diamond
-        scene.scoreText.setText('Score: ' + scene.score);  // Update score display
-        diamondSpawned = false;  // Mark diamond as no longer active
-
-        // Delay for 1 second before spawning a new diamond
+        diamond.disableBody(true, true);
+        scene.score += 30;
+        scene.scoreText.setText('Score: ' + scene.score);
+        diamondSpawned = false;
         scene.time.delayedCall(1000, () => {
-            spawnCollectible(scene, 'diamond');  // Respawn a new diamond
+            spawnCollectible(scene, 'diamond');
         });
-
-        growTail(scene);  // Call the function to grow the player's tail, pass the scene object
+        growTail(scene);
     }
 }
 
 // Function to handle the collection of money
 export function collectMoney(scene, money) {
     if (money.active) {
-        money.disableBody(true, true);  // Disable and hide the money when collected
-        scene.score += 10;  // Increase score by 10 for collecting money
-        scene.scoreText.setText('Score: ' + scene.score);  // Update score display
-        moneySpawned = false;  // Mark money as no longer active
-
-        // Delay for 1 second before spawning new money
+        money.disableBody(true, true);
+        scene.score += 10;
+        scene.scoreText.setText('Score: ' + scene.score);
+        moneySpawned = false;
         scene.time.delayedCall(1000, () => {
-            spawnCollectible(scene, 'money');  // Respawn new money
+            spawnCollectible(scene, 'money');
         });
-
-        growTail(scene);  // Call the function to grow the player's tail, pass the scene object
+        growTail(scene);
     }
 }
