@@ -1,4 +1,4 @@
-import { preloadPlayer, createPlayer, updatePlayer } from './player.js';  // Import player functions
+import { preloadPlayer, createPlayer, updatePlayer, movePlayer } from './player.js';  // Import player functions
 import { createCollectibles } from './collectibles.js';  // Import collectibles functions
 import { updateTail, checkTailCollision } from './tail.js';  // Import tail functions
 
@@ -30,7 +30,7 @@ export class GameScene extends Phaser.Scene {
         createPlayer(this);  // Create the player sprite
         createCollectibles(this);  // Create collectibles like diamonds and money
 
-        // Initialize the keyboard controls
+        // Initialize keyboard controls
         this.cursors = this.input.keyboard.createCursorKeys();
 
         // Add on-screen touch controls for mobile
@@ -71,6 +71,14 @@ export class GameScene extends Phaser.Scene {
         // Handle right button for clockwise rotation
         rightButton.on('pointerdown', () => {
             this.rotateClockwise();
+        });
+
+        // Continuously update the player's movement based on the current direction
+        leftButton.on('pointerdown', () => {
+            movePlayer(this);  // Call player movement
+        });
+        rightButton.on('pointerdown', () => {
+            movePlayer(this);  // Call player movement
         });
     }
 
