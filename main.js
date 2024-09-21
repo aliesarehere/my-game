@@ -69,6 +69,3 @@ function resizeGame() {
         canvas.style.marginTop = `${(window.innerHeight - newHeight) / 2}px`;
     }
 }
-
-// Ensure the game scales correctly on initial load
-resizeGame();
