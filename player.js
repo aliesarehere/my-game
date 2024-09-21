@@ -2,7 +2,7 @@ import { speedSettings } from './speed.js';  // Import speed settings
 
 export let player, lastDirection = 'RIGHT', currentDirection = 'RIGHT', lastMoveTime = 0;
 const playerSpeed = speedSettings.playerSpeed, moveDelay = speedSettings.moveDelay;
-let playerScale = 1.1;  // Set player scale to 1.5 times bigger than others
+let playerScale = 1;  // Set player scale to 1.5 times bigger than others
 
 // Preload player sprites
 export function preloadPlayer(scene) {
@@ -15,7 +15,7 @@ export function preloadPlayer(scene) {
 // Create player sprite in the game
 export function createPlayer(scene) {
     // Set player size to be 1.5 times bigger than other game elements
-    playerScale = Math.min(window.innerWidth / 600, 1) * 1.1;  // Player is 1.5 times bigger than the base scale
+    playerScale = Math.min(window.innerWidth / 600, 1) * 1;  // Player is 1.5 times bigger than the base scale
     player = scene.physics.add.sprite(240, 400, 'girl_right').setOrigin(0).setScale(playerScale);
     player.setCollideWorldBounds(true);  // Prevent leaving the screen
 }
@@ -71,7 +71,7 @@ export function movePlayer(scene) {
 
 // Function to scale the player based on window resize
 export function scalePlayerOnResize() {
-    playerScale = Math.min(window.innerWidth / 600, 1) * 1.1;  // Ensure the player is 1.5 times bigger
+    playerScale = Math.min(window.innerWidth / 600, 1) * 1;  // Ensure the player is 1.5 times bigger
     if (player) {
         player.setScale(playerScale);  // Apply the new scale
     }
