@@ -4,7 +4,7 @@ import { growTail } from './tail.js';   // Import the growTail function from tai
 let diamonds = [];
 let moneyBags = [];
 let diamondSpawned = false, moneySpawned = false;
-let collectibleScale = 0.9;  // Scale for collectibles, slightly smaller than player
+let collectibleScale = 0.7;  // Scale for collectibles, slightly smaller than player
 
 // Function to create initial collectibles
 export function createCollectibles(scene) {

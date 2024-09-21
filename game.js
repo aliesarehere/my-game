@@ -73,6 +73,9 @@ export class GameScene extends Phaser.Scene {
         rightButton.on('pointerdown', () => {
             this.handleRightButton();
         });
+
+        this.leftButton = leftButton;  // Keep reference to the buttons for scaling
+        this.rightButton = rightButton;
     }
 
     // Method to handle left button press based on current direction

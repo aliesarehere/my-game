@@ -2,7 +2,7 @@ import { speedSettings } from './speed.js';  // Import speed settings
 
 export let player, lastDirection = 'RIGHT', currentDirection = 'RIGHT', lastMoveTime = 0;  // Export currentDirection
 const playerSpeed = speedSettings.playerSpeed, moveDelay = speedSettings.moveDelay;
-let playerScale = 1.5;  // New variable to store player scale
+let playerScale = 1;  // New variable to store player scale
 
 // Preload player sprites
 export function preloadPlayer(scene) {
@@ -15,7 +15,7 @@ export function preloadPlayer(scene) {
 // Create player sprite in the game
 export function createPlayer(scene) {
     // Set player size relative to collectibles
-    playerScale = Math.min(window.innerWidth / 600, 1.7);  // Adjust scaling compared to collectibles, slightly larger
+    playerScale = Math.min(window.innerWidth / 600, 1);  // Adjust scaling compared to collectibles, slightly larger
     player = scene.physics.add.sprite(240, 400, 'girl_right').setOrigin(0).setScale(playerScale);
     player.setCollideWorldBounds(true);  // Prevent leaving the screen
 }
@@ -70,4 +70,12 @@ export function movePlayer(scene) {
     }
 
     lastDirection = currentDirection;
+}
+
+// Function to scale the player based on window resize
+export function scalePlayerOnResize() {
+    playerScale = Math.min(window.innerWidth / 600, 1);  // Adjust the scale
+    if (player) {
+        player.setScale(playerScale);  // Apply the new scale
+    }
 }
