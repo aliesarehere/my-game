@@ -59,8 +59,9 @@ export class GameScene extends Phaser.Scene {
 
     // Method to add touch controls for mobile devices
     addTouchControls() {
-        // Divide the screen into two parts: left and right for control buttons
+        // Create left button covering the entire left vertical half of the screen
         const leftButton = this.add.rectangle(0, 0, window.innerWidth / 2, window.innerHeight, 0x000000, 0).setOrigin(0).setInteractive();
+        // Create right button covering the entire right vertical half of the screen
         const rightButton = this.add.rectangle(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight, 0x000000, 0).setOrigin(0).setInteractive();
 
         // Handle left button for counterclockwise rotation
