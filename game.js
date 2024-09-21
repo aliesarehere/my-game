@@ -64,23 +64,35 @@ export class GameScene extends Phaser.Scene {
         // Create right button covering the entire right vertical half of the screen
         const rightButton = this.add.rectangle(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight, 0x000000, 0).setOrigin(0).setInteractive();
 
-        // Handle left button for counterclockwise rotation
+        // Handle left button for movement based on current direction
         leftButton.on('pointerdown', () => {
-            this.rotateCounterClockwise();
+            this.handleLeftButton();
         });
 
-        // Handle right button for clockwise rotation
+        // Handle right button for movement based on current direction
         rightButton.on('pointerdown', () => {
+            this.handleRightButton();
+        });
+    }
+
+    // Method to handle left button press based on current direction
+    handleLeftButton() {
+        if (this.currentDirection === 'DOWN') {
+            // Swap directions when moving down
             this.rotateClockwise();
-        });
+        } else {
+            this.rotateCounterClockwise();
+        }
+    }
 
-        // Continuously update the player's movement based on the current direction
-        leftButton.on('pointerdown', () => {
-            movePlayer(this);  // Call player movement
-        });
-        rightButton.on('pointerdown', () => {
-            movePlayer(this);  // Call player movement
-        });
+    // Method to handle right button press based on current direction
+    handleRightButton() {
+        if (this.currentDirection === 'DOWN') {
+            // Swap directions when moving down
+            this.rotateCounterClockwise();
+        } else {
+            this.rotateClockwise();
+        }
     }
 
     // Method to rotate the direction counterclockwise

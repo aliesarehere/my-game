@@ -8,31 +8,35 @@ export class GameOverScene extends Phaser.Scene {
     }
 
     preload() {
-        // Load the HTML for the form
+        // Load the HTML for the form and a background image
         this.load.html('nameform', 'assets/nameform.html');
+        this.load.image('gameover_bg', 'assets/background.png');  // Preload a background image for the game over screen
     }
 
     create() {
-        // Display the game over message and score
-        this.add.text(240, 100, `Game Over! Your score: ${this.finalScore}`, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+        // Add and scale the background image
+        this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'gameover_bg').setDisplaySize(window.innerWidth, window.innerHeight);
 
-        // Create the DOM element for the form
-        let nameForm = this.add.dom(240, 200).createFromCache('nameform').setOrigin(0.5);
+        // Display the game over message and score in the center of the screen
+        this.add.text(window.innerWidth / 2, window.innerHeight / 2 - 100, `Game Over! Your score: ${this.finalScore}`, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
 
-        // Add listener to submit button
+        // Create the DOM element for the form and center it
+        let nameForm = this.add.dom(window.innerWidth / 2, window.innerHeight / 2).createFromCache('nameform').setOrigin(0.5);
+
+        // Add listener to the submit button in the form
         nameForm.addListener('click');
         nameForm.on('click', (event) => {
             if (event.target.name === 'submit') {
                 let inputText = nameForm.getChildByName('name');
                 if (inputText.value !== '') {
-                    // Save the name and score (you can later save it to local storage or a database)
+                    // Save the name and score (could be local storage or a database)
                     this.saveScore(inputText.value, this.finalScore);
                 }
             }
         });
 
-        // Create the "Continue" button to refresh the page
-        const continueButton = this.add.text(240, 350, 'Continue', { fontSize: '32px', fill: '#fff' })
+        // Create the "Continue" button to refresh the page and center it
+        const continueButton = this.add.text(window.innerWidth / 2, window.innerHeight / 2 + 150, 'Continue', { fontSize: '32px', fill: '#fff' })
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {

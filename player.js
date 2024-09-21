@@ -18,21 +18,26 @@ export function createPlayer(scene) {
 }
 
 // Update player movement
-export function updatePlayer(scene, cursors) {
+export function updatePlayer(scene, cursors, touchDirection = null) {
     // Defensive check to ensure cursors is not undefined
     if (!cursors || !cursors.left || !cursors.right || !cursors.up || !cursors.down) {
         return;
     }
 
-    // Movement logic based on cursor input
-    if (cursors.left.isDown && lastDirection !== 'RIGHT') {
-        currentDirection = 'LEFT';
-    } else if (cursors.right.isDown && lastDirection !== 'LEFT') {
-        currentDirection = 'RIGHT';
-    } else if (cursors.up.isDown && lastDirection !== 'DOWN') {
-        currentDirection = 'UP';
-    } else if (cursors.down.isDown && lastDirection !== 'UP') {
-        currentDirection = 'DOWN';
+    // If using touch controls, overwrite direction based on touchDirection
+    if (touchDirection) {
+        currentDirection = touchDirection;
+    } else {
+        // Handle keyboard controls
+        if (cursors.left.isDown && lastDirection !== 'RIGHT') {
+            currentDirection = 'LEFT';
+        } else if (cursors.right.isDown && lastDirection !== 'LEFT') {
+            currentDirection = 'RIGHT';
+        } else if (cursors.up.isDown && lastDirection !== 'DOWN') {
+            currentDirection = 'UP';
+        } else if (cursors.down.isDown && lastDirection !== 'UP') {
+            currentDirection = 'DOWN';
+        }
     }
 
     // Move player if enough time has passed since last move
