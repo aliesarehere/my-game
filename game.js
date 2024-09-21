@@ -18,14 +18,8 @@ export class GameScene extends Phaser.Scene {
 
     create() {
         // Add and scale the background
-        let bg = this.add.image(0, 0, 'background').setOrigin(0, 0);
-
-        // Scale background to fit the window
-        let scaleX = window.innerWidth / bg.width;
-        let scaleY = window.innerHeight / bg.height;
-        let scale = Math.max(scaleX, scaleY);
-        bg.setScale(scale).setScrollFactor(0);
-
+        this.background = this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'background').setDisplaySize(window.innerWidth, window.innerHeight);
+        
         // Reset score and tail when the scene is created or restarted
         this.score = 0;  // Initialize the score as part of the scene object
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '24px', fill: '#fff' });  // Display the score
@@ -39,6 +33,14 @@ export class GameScene extends Phaser.Scene {
 
         // Add invisible on-screen controls (mobile controls)
         this.addInvisibleOnScreenControls();  // Call the method to add touch controls
+
+        // Scale game elements based on device screen size
+        this.scaleGameElements();
+        
+        // Add resize event listener to apply scaling when the window is resized
+        window.addEventListener('resize', () => {
+            this.scaleGameElements();
+        });
     }
 
     update(time, delta) {
@@ -53,29 +55,52 @@ export class GameScene extends Phaser.Scene {
         this.scene.restart();  // Restart the current scene, resetting all objects and variables
     }
 
-    // Method to add invisible on-screen touch controls
+    // Method to add invisible on-screen touch controls for mobile
     addInvisibleOnScreenControls() {
         // Create invisible button regions for controls
         const bottomHalf = window.innerHeight / 2;
 
         // Invisible Up button area (top center of the bottom half)
-        const upButtonArea = this.add.rectangle(window.innerWidth / 2, bottomHalf - 100, 200, 200, 0x000000, 0).setInteractive();
-        upButtonArea.on('pointerdown', () => this.cursors.up.isDown = true);
-        upButtonArea.on('pointerup', () => this.cursors.up.isDown = false);
+        this.upButtonArea = this.add.rectangle(window.innerWidth / 2, bottomHalf - 100, 200, 200, 0x000000, 0).setInteractive();
+        this.upButtonArea.on('pointerdown', () => this.cursors.up.isDown = true);
+        this.upButtonArea.on('pointerup', () => this.cursors.up.isDown = false);
 
         // Invisible Down button area (bottom center of the bottom half)
-        const downButtonArea = this.add.rectangle(window.innerWidth / 2, window.innerHeight - 100, 200, 200, 0x000000, 0).setInteractive();
-        downButtonArea.on('pointerdown', () => this.cursors.down.isDown = true);
-        downButtonArea.on('pointerup', () => this.cursors.down.isDown = false);
+        this.downButtonArea = this.add.rectangle(window.innerWidth / 2, window.innerHeight - 100, 200, 200, 0x000000, 0).setInteractive();
+        this.downButtonArea.on('pointerdown', () => this.cursors.down.isDown = true);
+        this.downButtonArea.on('pointerup', () => this.cursors.down.isDown = false);
 
         // Invisible Left button area (left side of the bottom half)
-        const leftButtonArea = this.add.rectangle(100, window.innerHeight - 150, 200, 200, 0x000000, 0).setInteractive();
-        leftButtonArea.on('pointerdown', () => this.cursors.left.isDown = true);
-        leftButtonArea.on('pointerup', () => this.cursors.left.isDown = false);
+        this.leftButtonArea = this.add.rectangle(100, window.innerHeight - 150, 200, 200, 0x000000, 0).setInteractive();
+        this.leftButtonArea.on('pointerdown', () => this.cursors.left.isDown = true);
+        this.leftButtonArea.on('pointerup', () => this.cursors.left.isDown = false);
 
         // Invisible Right button area (right side of the bottom half)
-        const rightButtonArea = this.add.rectangle(window.innerWidth - 100, window.innerHeight - 150, 200, 200, 0x000000, 0).setInteractive();
-        rightButtonArea.on('pointerdown', () => this.cursors.right.isDown = true);
-        rightButtonArea.on('pointerup', () => this.cursors.right.isDown = false);
+        this.rightButtonArea = this.add.rectangle(window.innerWidth - 100, window.innerHeight - 150, 200, 200, 0x000000, 0).setInteractive();
+        this.rightButtonArea.on('pointerdown', () => this.cursors.right.isDown = true);
+        this.rightButtonArea.on('pointerup', () => this.cursors.right.isDown = false);
+    }
+
+    // Method to scale game elements proportionally based on screen size
+    scaleGameElements() {
+        const scaleX = window.innerWidth / this.background.width;
+        const scaleY = window.innerHeight / this.background.height;
+        const scale = Math.max(scaleX, scaleY);
+        
+        // Scale the background proportionally
+        this.background.setScale(scale).setScrollFactor(0);
+
+        // Scale the score text if initialized
+        if (this.scoreText) {
+            this.scoreText.setFontSize(24 * scale);
+        }
+
+        // Rescale buttons for mobile controls
+        if (this.upButtonArea) {
+            this.upButtonArea.setSize(200 * scale, 200 * scale);
+            this.downButtonArea.setSize(200 * scale, 200 * scale);
+            this.leftButtonArea.setSize(200 * scale, 200 * scale);
+            this.rightButtonArea.setSize(200 * scale, 200 * scale);
+        }
     }
 }
