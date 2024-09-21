@@ -1,6 +1,6 @@
-import { preloadPlayer, createPlayer, updatePlayer, movePlayer } from './player.js';  // Import player functions
+import { preloadPlayer, createPlayer, updatePlayer, movePlayer, player } from './player.js';  // Import player functions
 import { createCollectibles } from './collectibles.js';  // Import collectibles functions
-import { updateTail, checkTailCollision } from './tail.js';  // Import tail functions
+import { updateTail, checkTailCollision, tail } from './tail.js';  // Import tail functions
 
 export class GameScene extends Phaser.Scene {
     constructor() {
@@ -121,6 +121,21 @@ export class GameScene extends Phaser.Scene {
         // Scale the score text if initialized
         if (this.scoreText) {
             this.scoreText.setFontSize(24 * scale);
+        }
+
+        // Scale player and tail proportionally
+        if (player) {
+            player.setScale(scale);
+        }
+
+        if (tail.length > 0) {
+            tail.forEach(segment => segment.setScale(scale));
+        }
+
+        // Adjust the size of the buttons for mobile controls
+        if (this.leftButton && this.rightButton) {
+            this.leftButton.setSize(window.innerWidth / 2, window.innerHeight);
+            this.rightButton.setSize(window.innerWidth / 2, window.innerHeight);
         }
     }
 }

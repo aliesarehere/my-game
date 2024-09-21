@@ -1,7 +1,7 @@
 import { player, currentDirection } from './player.js';  // Import the player object and currentDirection
 import { speedSettings } from './speed.js';  // Import speed settings
 
-let tail = [];
+export let tail = [];  // Export the tail array
 const { tailSpeed, tailFollowDistance } = speedSettings;  // Use speed and distance settings from speed.js
 
 let playerSize = 60;  // Define player size (60x60 pixels)
@@ -85,4 +85,3 @@ export function checkTailCollision(scene) {
         }
     }
 }
-
