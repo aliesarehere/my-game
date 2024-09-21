@@ -17,18 +17,18 @@ export function createPlayer(scene) {
     player.setCollideWorldBounds(true);  // Prevent leaving the screen
 }
 
-// Update player movement with touch support and keyboard input
+// Update player movement
 export function updatePlayer(scene, cursors, touchDirection = null) {
     // Defensive check to ensure cursors is not undefined
     if (!cursors || !cursors.left || !cursors.right || !cursors.up || !cursors.down) {
         return;
     }
 
-    // If using touch controls, set the direction based on touch input
+    // If using touch controls, overwrite direction based on touchDirection
     if (touchDirection) {
         currentDirection = touchDirection;
     } else {
-        // Handle keyboard input for movement
+        // Handle keyboard controls
         if (cursors.left.isDown && lastDirection !== 'RIGHT') {
             currentDirection = 'LEFT';
         } else if (cursors.right.isDown && lastDirection !== 'LEFT') {
@@ -40,35 +40,33 @@ export function updatePlayer(scene, cursors, touchDirection = null) {
         }
     }
 
-    // Move player if enough time has passed since the last move
+    // Move player if enough time has passed since last move
     if (scene.time.now - lastMoveTime > moveDelay) {
-        movePlayerSmooth(scene);  // Use smooth movement function
+        movePlayer(scene);
         lastMoveTime = scene.time.now;
     }
 }
 
-// Smoothly move the player according to the current direction
-export function movePlayerSmooth(scene) {
-    const smoothSpeed = 0.1;  // Adjust this value for smoother or faster movement
-
+// Move the player according to direction
+export function movePlayer(scene) {
     switch (currentDirection) {
         case 'LEFT':
-            player.x = Phaser.Math.Linear(player.x, player.x - playerSpeed, smoothSpeed);
+            player.x -= playerSpeed;
             player.setTexture('girl_left');
             break;
         case 'RIGHT':
-            player.x = Phaser.Math.Linear(player.x, player.x + playerSpeed, smoothSpeed);
+            player.x += playerSpeed;
             player.setTexture('girl_right');
             break;
         case 'UP':
-            player.y = Phaser.Math.Linear(player.y, player.y - playerSpeed, smoothSpeed);
+            player.y -= playerSpeed;
             player.setTexture('girl_up');
             break;
         case 'DOWN':
-            player.y = Phaser.Math.Linear(player.y, player.y + playerSpeed, smoothSpeed);
+            player.y += playerSpeed;
             player.setTexture('girl_down');
             break;
     }
 
     lastDirection = currentDirection;
-}
+} 

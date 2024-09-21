@@ -4,14 +4,14 @@ import { updateTail, checkTailCollision } from './tail.js';  // Import tail func
 
 export class GameScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'GameScene' });  // Define the scene with a key
+        super({ key: 'GameScene' });
         this.currentDirection = 'RIGHT';  // Initial direction
         this.directions = ['UP', 'RIGHT', 'DOWN', 'LEFT'];  // Directions in clockwise order
     }
 
     preload() {
         // Preload assets for the game
-        this.load.image('background', 'assets/background.png');  // Preload background
+        this.load.image('background', 'assets/background.png');
         preloadPlayer(this);  // Preload player assets
         this.load.image('diamond', 'assets/diamond.png');  // Preload diamond image
         this.load.image('money', 'assets/dolar.png');  // Preload money image
@@ -24,7 +24,7 @@ export class GameScene extends Phaser.Scene {
         
         // Reset score and tail when the scene is created or restarted
         this.score = 0;  // Initialize the score as part of the scene object
-        this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '24px', fill: '#fff' });  // Display the score
+        this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '24px', fill: '#fff' });
 
         // Create player and collectibles
         createPlayer(this);  // Create the player sprite
