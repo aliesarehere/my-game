@@ -2,13 +2,15 @@ import { player, currentDirection } from './player.js';  // Import the player ob
 import { speedSettings } from './speed.js';  // Import speed settings
 
 let tail = [];
-const { tailSpeed, tileSize, tailFollowDistance } = speedSettings;  // Use speed and distance settings from speed.js
+const { tailSpeed, tailFollowDistance } = speedSettings;  // Use speed and distance settings from speed.js
 
-const playerSize = 60;  // Define player size (60x60 pixels)
+let playerSize = 60;  // Define player size (60x60 pixels)
 let positionsBuffer = [];  // Buffer to store previous positions for the tail
+let tailScale = 0.5;  // Scale for tail segment size
 
 // Function to grow the tail when a collectible is picked up
 export function growTail(scene) {  // Pass scene as a parameter
+    tailScale = Math.min(window.innerWidth / 800, 1);  // Scale the tail segments proportionally to screen size
     let newTailSegment;
 
     if (tail.length === 0) {
@@ -31,11 +33,11 @@ export function growTail(scene) {  // Pass scene as a parameter
                 break;
         }
         // Add first segment right behind the player
-        newTailSegment = scene.add.sprite(spawnX, spawnY, 'bag').setOrigin(0);
+        newTailSegment = scene.add.sprite(spawnX, spawnY, 'bag').setOrigin(0).setScale(tailScale);
     } else {
         // Create subsequent segments at the last tail segment's position
         let lastTailSegment = tail[tail.length - 1];
-        newTailSegment = scene.add.sprite(lastTailSegment.x, lastTailSegment.y, 'bag').setOrigin(0);
+        newTailSegment = scene.add.sprite(lastTailSegment.x, lastTailSegment.y, 'bag').setOrigin(0).setScale(tailScale);
     }
 
     // Add new segment to tail array
@@ -83,3 +85,4 @@ export function checkTailCollision(scene) {
         }
     }
 }
+

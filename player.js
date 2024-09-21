@@ -2,6 +2,7 @@ import { speedSettings } from './speed.js';  // Import speed settings
 
 export let player, lastDirection = 'RIGHT', currentDirection = 'RIGHT', lastMoveTime = 0;  // Export currentDirection
 const playerSpeed = speedSettings.playerSpeed, moveDelay = speedSettings.moveDelay;
+let playerScale = 0.9;  // New variable to store player scale
 
 // Preload player sprites
 export function preloadPlayer(scene) {
@@ -13,7 +14,9 @@ export function preloadPlayer(scene) {
 
 // Create player sprite in the game
 export function createPlayer(scene) {
-    player = scene.physics.add.sprite(240, 400, 'girl_right').setOrigin(0);
+    // Scale player size based on screen width
+    playerScale = Math.min(window.innerWidth / 800, 1);  // Adjust the scale to fit smaller screens
+    player = scene.physics.add.sprite(240, 400, 'girl_right').setOrigin(0).setScale(playerScale);
     player.setCollideWorldBounds(true);  // Prevent leaving the screen
 }
 
@@ -69,4 +72,4 @@ export function movePlayer(scene) {
     }
 
     lastDirection = currentDirection;
-} 
+}
