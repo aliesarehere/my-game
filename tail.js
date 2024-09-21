@@ -6,7 +6,7 @@ const { tailSpeed, tailFollowDistance } = speedSettings;  // Use speed and dista
 
 let playerSize = 60;  // Define player size (60x60 pixels)
 let positionsBuffer = [];  // Buffer to store previous positions for the tail
-let tailScale = 1;  // Scale for tail segment size
+let tailScale = 1.5;  // Scale for tail segment size
 
 // Function to grow the tail when a collectible is picked up
 export function growTail(scene) {  // Pass scene as a parameter
