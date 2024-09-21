@@ -6,11 +6,11 @@ const { tailSpeed, tailFollowDistance } = speedSettings;  // Use speed and dista
 
 let playerSize = 60;  // Define player size (60x60 pixels)
 let positionsBuffer = [];  // Buffer to store previous positions for the tail
-let tailScale = 1.5;  // Scale for tail segment size
+let tailScale = 0.6;  // Scale for tail segment size, making the tail larger than collectibles
 
 // Function to grow the tail when a collectible is picked up
-export function growTail(scene) {  // Pass scene as a parameter
-    tailScale = Math.min(window.innerWidth / 800, 1);  // Scale the tail segments proportionally to screen size
+export function growTail(scene) {  
+    tailScale = Math.min(window.innerWidth / 800, 1) * 1.5;  // Adjust the scale based on the screen size and apply larger scaling for the tail
     let newTailSegment;
 
     if (tail.length === 0) {
@@ -20,19 +20,19 @@ export function growTail(scene) {  // Pass scene as a parameter
 
         switch (currentDirection) {
             case 'LEFT':
-                spawnX = player.x + playerSize;
+                spawnX = player.x + player.displayWidth;  // Respect player scaling
                 break;
             case 'RIGHT':
-                spawnX = player.x - playerSize;
+                spawnX = player.x - player.displayWidth;
                 break;
             case 'UP':
-                spawnY = player.y + playerSize;
+                spawnY = player.y + player.displayHeight;
                 break;
             case 'DOWN':
-                spawnY = player.y - playerSize;
+                spawnY = player.y - player.displayHeight;
                 break;
         }
-        // Add first segment right behind the player
+        // Add the first segment right behind the player
         newTailSegment = scene.add.sprite(spawnX, spawnY, 'bag').setOrigin(0).setScale(tailScale);
     } else {
         // Create subsequent segments at the last tail segment's position
@@ -40,14 +40,14 @@ export function growTail(scene) {  // Pass scene as a parameter
         newTailSegment = scene.add.sprite(lastTailSegment.x, lastTailSegment.y, 'bag').setOrigin(0).setScale(tailScale);
     }
 
-    // Add new segment to tail array
+    // Add the new segment to the tail array
     tail.push(newTailSegment);
     console.log("New tail segment added. Total segments: ", tail.length);
 }
 
 // Update the tail movement to maintain proper distance based on 60x60 object sizes
 export function updateTail() {
-    // Store current player position in the buffer
+    // Store the current player position in the buffer
     positionsBuffer.unshift({ x: player.x, y: player.y });
 
     // Limit the size of the buffer to only hold as many positions as required by the tail segments
@@ -58,7 +58,7 @@ export function updateTail() {
 
     // Update the position of each tail segment by using the buffered positions
     for (let i = 0; i < tail.length; i++) {
-        const tailPositionIndex = (i + 1) * tailFollowDistance;  // Each segment follows at a distance
+        const tailPositionIndex = (i + 1) * tailFollowDistance;  // Each segment follows at a set distance
 
         // Ensure we have enough positions in the buffer for each tail segment
         if (positionsBuffer[tailPositionIndex]) {
