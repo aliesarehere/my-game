@@ -1,16 +1,16 @@
 import { player, currentDirection } from './player.js';  // Import the player object and currentDirection
 import { speedSettings } from './speed.js';  // Import speed settings
 
-export let tail = [];  // Export the tail array
+export let tail = [];  // Correctly export the tail array
 const { tailSpeed, tailFollowDistance } = speedSettings;  // Use speed and distance settings from speed.js
 
 let playerSize = 60;  // Define player size (60x60 pixels)
 let positionsBuffer = [];  // Buffer to store previous positions for the tail
-let tailScale = 0.6;  // Scale for tail segment size, making the tail larger than collectibles
+let tailScale = 1.3;  // Scale for tail segment size
 
 // Function to grow the tail when a collectible is picked up
 export function growTail(scene) {  
-    tailScale = Math.min(window.innerWidth / 800, 1) * 1.5;  // Adjust the scale based on the screen size and apply larger scaling for the tail
+    tailScale = Math.min(window.innerWidth / 800, 1);  // Scale the tail segments proportionally to screen size
     let newTailSegment;
 
     if (tail.length === 0) {
@@ -20,19 +20,19 @@ export function growTail(scene) {
 
         switch (currentDirection) {
             case 'LEFT':
-                spawnX = player.x + player.displayWidth;  // Respect player scaling
+                spawnX = player.x + playerSize;
                 break;
             case 'RIGHT':
-                spawnX = player.x - player.displayWidth;
+                spawnX = player.x - playerSize;
                 break;
             case 'UP':
-                spawnY = player.y + player.displayHeight;
+                spawnY = player.y + playerSize;
                 break;
             case 'DOWN':
-                spawnY = player.y - player.displayHeight;
+                spawnY = player.y - playerSize;
                 break;
         }
-        // Add the first segment right behind the player
+        // Add first segment right behind the player
         newTailSegment = scene.add.sprite(spawnX, spawnY, 'bag').setOrigin(0).setScale(tailScale);
     } else {
         // Create subsequent segments at the last tail segment's position
@@ -40,32 +40,31 @@ export function growTail(scene) {
         newTailSegment = scene.add.sprite(lastTailSegment.x, lastTailSegment.y, 'bag').setOrigin(0).setScale(tailScale);
     }
 
-    // Add the new segment to the tail array
+    // Add new segment to tail array
     tail.push(newTailSegment);
     console.log("New tail segment added. Total segments: ", tail.length);
 }
 
-// Update the tail movement to maintain proper distance based on 60x60 object sizes
+// Update the tail movement to maintain proper distance
 export function updateTail() {
-    // Store the current player position in the buffer
+    // Store current player position in the buffer
     positionsBuffer.unshift({ x: player.x, y: player.y });
 
-    // Limit the size of the buffer to only hold as many positions as required by the tail segments
+    // Limit the size of the buffer
     const bufferSize = (tail.length + 1) * tailFollowDistance;
     if (positionsBuffer.length > bufferSize) {
         positionsBuffer.pop();  // Remove old positions from the buffer
     }
 
-    // Update the position of each tail segment by using the buffered positions
+    // Update the position of each tail segment
     for (let i = 0; i < tail.length; i++) {
-        const tailPositionIndex = (i + 1) * tailFollowDistance;  // Each segment follows at a set distance
+        const tailPositionIndex = (i + 1) * tailFollowDistance;  // Each segment follows at a distance
 
-        // Ensure we have enough positions in the buffer for each tail segment
         if (positionsBuffer[tailPositionIndex]) {
             let targetPosition = positionsBuffer[tailPositionIndex];
             let currentSegment = tail[i];
 
-            // Smoothly move the tail segment to the target position
+            // Move the tail segment smoothly
             currentSegment.x = Phaser.Math.Linear(currentSegment.x, targetPosition.x, 0.1);
             currentSegment.y = Phaser.Math.Linear(currentSegment.y, targetPosition.y, 0.1);
         }
@@ -76,7 +75,7 @@ export function updateTail() {
 export function checkTailCollision(scene) {
     let playerRect = player.getBounds();
 
-    // Start checking from the second segment (tail[2] and onwards)
+    // Start checking from the second segment
     for (let i = 2; i < tail.length; i++) {
         let tailRect = tail[i].getBounds();
         if (Phaser.Geom.Intersects.RectangleToRectangle(playerRect, tailRect)) {

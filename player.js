@@ -2,7 +2,7 @@ import { speedSettings } from './speed.js';  // Import speed settings
 
 export let player, lastDirection = 'RIGHT', currentDirection = 'RIGHT', lastMoveTime = 0;  // Export currentDirection
 const playerSpeed = speedSettings.playerSpeed, moveDelay = speedSettings.moveDelay;
-let playerScale = 1;  // Larger scale for player
+let playerScale = 1.5;  // New variable to store player scale
 
 // Preload player sprites
 export function preloadPlayer(scene) {
@@ -14,23 +14,22 @@ export function preloadPlayer(scene) {
 
 // Create player sprite in the game
 export function createPlayer(scene) {
-    // Scale player size based on screen width and apply larger scale
+    // Set player size relative to collectibles
+    playerScale = Math.min(window.innerWidth / 600, 1.7);  // Adjust scaling compared to collectibles, slightly larger
     player = scene.physics.add.sprite(240, 400, 'girl_right').setOrigin(0).setScale(playerScale);
     player.setCollideWorldBounds(true);  // Prevent leaving the screen
 }
 
 // Update player movement
 export function updatePlayer(scene, cursors, touchDirection = null) {
-    // Defensive check to ensure cursors is not undefined
     if (!cursors || !cursors.left || !cursors.right || !cursors.up || !cursors.down) {
         return;
     }
 
-    // If using touch controls, overwrite direction based on touchDirection
+    // Handle touch or keyboard input
     if (touchDirection) {
         currentDirection = touchDirection;
     } else {
-        // Handle keyboard controls
         if (cursors.left.isDown && lastDirection !== 'RIGHT') {
             currentDirection = 'LEFT';
         } else if (cursors.right.isDown && lastDirection !== 'LEFT') {
@@ -42,7 +41,7 @@ export function updatePlayer(scene, cursors, touchDirection = null) {
         }
     }
 
-    // Move player if enough time has passed since last move
+    // Move player based on the time delay
     if (scene.time.now - lastMoveTime > moveDelay) {
         movePlayer(scene);
         lastMoveTime = scene.time.now;

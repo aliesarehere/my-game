@@ -4,35 +4,34 @@ import { growTail } from './tail.js';   // Import the growTail function from tai
 let diamonds = [];
 let moneyBags = [];
 let diamondSpawned = false, moneySpawned = false;
+let collectibleScale = 0.9;  // Scale for collectibles, slightly smaller than player
 
-// Function to create initial collectibles (one diamond and one money)
+// Function to create initial collectibles
 export function createCollectibles(scene) {
     spawnCollectible(scene, 'diamond', scene);
     spawnCollectible(scene, 'money', scene);
 }
 
-// Function to spawn new collectibles (diamonds or money) randomly on the map
+// Function to spawn new collectibles
 export function spawnCollectible(scene, type) {
     const tileSize = 15;  // Size of each tile in the game grid
-    let x = Phaser.Math.Between(0, 23) * tileSize;  // Random x-coordinate
-    let y = Phaser.Math.Between(0, 39) * tileSize;  // Random y-coordinate
-
-    const collectibleScale = 0.7;  // Adjust scale factor here for larger size
+    let x = Phaser.Math.Between(0, 23) * tileSize;
+    let y = Phaser.Math.Between(0, 39) * tileSize;
 
     // Spawn a diamond if none is currently active
     if (type === 'diamond' && !diamondSpawned) {
-        let diamond = scene.physics.add.sprite(x, y, 'diamond').setOrigin(0).setScale(collectibleScale);  // Create diamond sprite and scale
-        diamonds.push(diamond);  // Add the diamond to the array of diamonds
-        diamondSpawned = true;  // Mark that a diamond has been spawned
+        let diamond = scene.physics.add.sprite(x, y, 'diamond').setOrigin(0).setScale(collectibleScale);  // Apply scale
+        diamonds.push(diamond);
+        diamondSpawned = true;
         // Add overlap detection to collect the diamond when the player touches it
         scene.physics.add.overlap(player, diamond, () => collectDiamond(scene, diamond), null, scene);
     }
 
     // Spawn a money bag if none is currently active
     else if (type === 'money' && !moneySpawned) {
-        let money = scene.physics.add.sprite(x, y, 'money').setOrigin(0).setScale(collectibleScale);  // Create money sprite and scale
-        moneyBags.push(money);  // Add the money to the array of money
-        moneySpawned = true;  // Mark that a money bag has been spawned
+        let money = scene.physics.add.sprite(x, y, 'money').setOrigin(0).setScale(collectibleScale);  // Apply scale
+        moneyBags.push(money);
+        moneySpawned = true;
         // Add overlap detection to collect the money when the player touches it
         scene.physics.add.overlap(player, money, () => collectMoney(scene, money), null, scene);
     }
