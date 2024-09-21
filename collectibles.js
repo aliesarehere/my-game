@@ -13,13 +13,13 @@ export function createCollectibles(scene) {
 
 // Function to spawn new collectibles (diamonds or money) randomly on the map
 export function spawnCollectible(scene, type) {
-    const tileSize = 15;  // Size of each tile in the game grid
-    let x = Phaser.Math.Between(0, 23) * tileSize;  // Random x-coordinate
-    let y = Phaser.Math.Between(0, 39) * tileSize;  // Random y-coordinate
+    const tileSize = Math.min(window.innerWidth, window.innerHeight) / 25;  // Dynamically scale tile size based on screen size
+    let x = Phaser.Math.Between(0, Math.floor(window.innerWidth / tileSize)) * tileSize;  // Random x-coordinate
+    let y = Phaser.Math.Between(0, Math.floor(window.innerHeight / tileSize)) * tileSize;  // Random y-coordinate
 
     // Spawn a diamond if none is currently active
     if (type === 'diamond' && !diamondSpawned) {
-        let diamond = scene.physics.add.sprite(x, y, 'diamond').setOrigin(0);  // Create diamond sprite
+        let diamond = scene.physics.add.sprite(x, y, 'diamond').setOrigin(0).setDisplaySize(tileSize, tileSize);  // Create and scale diamond sprite
         diamonds.push(diamond);  // Add the diamond to the array of diamonds
         diamondSpawned = true;  // Mark that a diamond has been spawned
         // Add overlap detection to collect the diamond when the player touches it
@@ -28,7 +28,7 @@ export function spawnCollectible(scene, type) {
 
     // Spawn a money bag if none is currently active
     else if (type === 'money' && !moneySpawned) {
-        let money = scene.physics.add.sprite(x, y, 'money').setOrigin(0);  // Create money sprite
+        let money = scene.physics.add.sprite(x, y, 'money').setOrigin(0).setDisplaySize(tileSize, tileSize);  // Create and scale money sprite
         moneyBags.push(money);  // Add the money to the array of money
         moneySpawned = true;  // Mark that a money bag has been spawned
         // Add overlap detection to collect the money when the player touches it
@@ -49,7 +49,7 @@ export function collectDiamond(scene, diamond) {
             spawnCollectible(scene, 'diamond');  // Respawn a new diamond
         });
 
-        growTail(scene);  // Call the function to grow the player's tail, pass the scene object
+        growTail(scene);  // Call the function to grow the player's tail
     }
 }
 
@@ -66,6 +66,6 @@ export function collectMoney(scene, money) {
             spawnCollectible(scene, 'money');  // Respawn new money
         });
 
-        growTail(scene);  // Call the function to grow the player's tail, pass the scene object
+        growTail(scene);  // Call the function to grow the player's tail
     }
 }
